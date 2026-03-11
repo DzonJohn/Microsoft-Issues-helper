@@ -31,14 +31,21 @@ function validateAndMatch() {
 		return;
 	}
 
-	const matches = sampleInput.value.match(parsed.regex);
+	const regex = parsed.regex.global
+		? parsed.regex
+		: new RegExp(parsed.regex.source, `${parsed.regex.flags}g`);
+	const matches = Array.from(sampleInput.value.matchAll(regex));
 
-	if (!matches) {
+	if (matches.length === 0) {
 		outputInput.value = "No match";
 		return;
 	}
 
-	outputInput.value = `Match: ${matches[0]}`;
+	const formattedMatches = matches
+		.map((match, index) => `Match ${index + 1}: ${match[0]}`)
+		.join(", ");
+
+	outputInput.value = formattedMatches;
 }
 
 regexInput.addEventListener("input", validateAndMatch);
