@@ -1,6 +1,6 @@
 const regexInput = document.getElementById("regexText");
 const sampleInput = document.getElementById("sampleText");
-const outputInput = document.getElementById("outputRText");
+const outputInput = document.getElementById("outputText");
 
 function parseRegex(patternText) {
 	const trimmed = patternText.trim();
