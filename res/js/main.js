@@ -16,12 +16,38 @@ function parseRegex(patternText) {
 		return { error: "Enter a regex pattern." };
 	}
 
-	// Supports either plain patterns (abc) or slash format (/abc/i).
-	const slashFormat = trimmed.match(/^\/(.*)\/([a-z]*)$/i);
+	// Finds the closing delimiter in /pattern/flags while respecting escaped slashes.
+	const findClosingSlashIndex = (value) => {
+		for (let i = value.length - 1; i > 0; i -= 1) {
+			if (value[i] !== "/") {
+				continue;
+			}
+
+			let backslashCount = 0;
+			for (let j = i - 1; j >= 0 && value[j] === "\\"; j -= 1) {
+				backslashCount += 1;
+			}
+
+			if (backslashCount % 2 === 0) {
+				return i;
+			}
+		}
+
+		return -1;
+	};
 
 	try {
-		if (slashFormat) {
-			return { regex: new RegExp(slashFormat[1], slashFormat[2]) };
+		if (trimmed.startsWith("/")) {
+			const closingSlashIndex = findClosingSlashIndex(trimmed);
+
+			if (closingSlashIndex <= 0) {
+				return { error: "Invalid regex: Missing closing '/' delimiter." };
+			}
+
+			const pattern = trimmed.slice(1, closingSlashIndex);
+			const flags = trimmed.slice(closingSlashIndex + 1);
+
+			return { regex: new RegExp(pattern, flags) };
 		}
 
 		return { regex: new RegExp(trimmed) };
