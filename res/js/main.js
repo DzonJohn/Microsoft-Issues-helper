@@ -1,6 +1,13 @@
 const regexInput = document.getElementById("regexText");
 const sampleInput = document.getElementById("sampleText");
 const outputInput = document.getElementById("outputText");
+const matchCountDigit = document.querySelector(".zero-spinner-digit");
+
+function setMatchCount(count) {
+	if (matchCountDigit) {
+		matchCountDigit.textContent = String(count);
+	}
+}
 
 function parseRegex(patternText) {
 	const trimmed = patternText.trim();
@@ -24,9 +31,16 @@ function parseRegex(patternText) {
 }
 
 function validateAndMatch() {
+	if (!regexInput.value.trim() || !sampleInput.value.trim()) {
+		setMatchCount(0);
+		outputInput.value = "0";
+		return;
+	}
+
 	const parsed = parseRegex(regexInput.value);
 
 	if (parsed.error) {
+		setMatchCount(0);
 		outputInput.value = parsed.error;
 		return;
 	}
@@ -37,9 +51,12 @@ function validateAndMatch() {
 	const matches = Array.from(sampleInput.value.matchAll(regex));
 
 	if (matches.length === 0) {
-		outputInput.value = "No match";
+		setMatchCount(0);
+		outputInput.value = "0";
 		return;
 	}
+
+	setMatchCount(matches.length);
 
 	const formattedMatches = matches
 		.map((match, index) => `Match ${index + 1}: ${match[0]}`)
