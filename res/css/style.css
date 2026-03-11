@@ -58,6 +58,20 @@ input[type="text"]:read-only {
 	background: #eef2f9;
 }
 
+textarea#outputText {
+	width: 100%;
+	padding: 12px 14px;
+	margin-top: 20px;
+	font-size: 1rem;
+	line-height: 1.45;
+	border: 1px solid #c6ccd8;
+	border-radius: 8px;
+	background: #eef2f9;
+	resize: vertical;
+	min-height: 140px;
+	overflow: auto;
+}
+
 @keyframes spinZero {
 	from {
 		transform: rotate(0deg);
