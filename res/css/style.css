@@ -17,6 +17,21 @@ body {
 	text-align: center;
 }
 
+.zero-spinner {
+	width: 88px;
+	height: 88px;
+	margin: 0 auto 14px;
+	display: grid;
+	place-items: center;
+	font-size: 3.5rem;
+	font-weight: 700;
+	color: #1e3a8a;
+	border-radius: 50%;
+	border: 4px solid #93c5fd;
+	background: radial-gradient(circle at 30% 30%, #ffffff, #dbeafe);
+	animation: spinZero 1.4s linear infinite;
+}
+
 h1 {
 	margin: 0 0 16px;
 	font-size: clamp(2.5rem, 6vw, 4rem);
@@ -34,4 +49,13 @@ input[type="text"] {
 
 input[type="text"]:read-only {
 	background: #eef2f9;
+}
+
+@keyframes spinZero {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(360deg);
+	}
 }
