@@ -1,7 +1,24 @@
+const urlInput = document.getElementById("urlText");
 const regexInput = document.getElementById("regexText");
 const sampleInput = document.getElementById("sampleText");
 const outputInput = document.getElementById("outputText");
 const matchCountDigit = document.querySelector(".zero-spinner-digit");
+
+const urlService = {
+	process(urlText) {
+		const trimmed = urlText.trim();
+
+		if (!trimmed) {
+			return { url: "" };
+		}
+
+		try {
+			return { url: new URL(trimmed).toString() };
+		} catch {
+			return { error: "Invalid URL for service input." };
+		}
+	}
+};
 
 function setMatchCount(count) {
 	if (matchCountDigit) {
@@ -57,9 +74,19 @@ function parseRegex(patternText) {
 }
 
 function validateAndMatch() {
+	const processedUrl = urlService.process(urlInput.value);
+
+	if (processedUrl.error) {
+		setMatchCount(0);
+		outputInput.value = processedUrl.error;
+		return;
+	}
+
 	if (!regexInput.value.trim() || !sampleInput.value.trim()) {
 		setMatchCount(0);
-		outputInput.value = "0";
+		outputInput.value = processedUrl.url
+			? `Service URL: ${processedUrl.url}\n0`
+			: "0";
 		return;
 	}
 
@@ -78,7 +105,9 @@ function validateAndMatch() {
 
 	if (matches.length === 0) {
 		setMatchCount(0);
-		outputInput.value = "0";
+		outputInput.value = processedUrl.url
+			? `Service URL: ${processedUrl.url}\n0`
+			: "0";
 		return;
 	}
 
@@ -88,9 +117,12 @@ function validateAndMatch() {
 		.map((match, index) => `Match ${index + 1}: ${match[0]}`)
 		.join(", ");
 
-	outputInput.value = formattedMatches;
+	outputInput.value = processedUrl.url
+		? `Service URL: ${processedUrl.url}\n${formattedMatches}`
+		: formattedMatches;
 }
 
+urlInput.addEventListener("input", validateAndMatch);
 regexInput.addEventListener("input", validateAndMatch);
 sampleInput.addEventListener("input", validateAndMatch);
 
