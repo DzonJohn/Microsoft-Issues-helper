@@ -98,9 +98,7 @@ async function validateAndMatch() {
 
 	if (!regexInput.value.trim()) {
 		setMatchCount(0);
-		outputInput.value = processedUrl.url
-			? `Service URL: ${processedUrl.url}\n0`
-			: "0";
+		outputInput.value = "0";
 		return;
 	}
 
@@ -117,10 +115,8 @@ async function validateAndMatch() {
 		: new RegExp(parsed.regex.source, `${parsed.regex.flags}g`);
 
 	let sourceText = sampleInput.value;
-	let sourcePrefix = "";
 
 	if (processedUrl.url) {
-		sourcePrefix = `Service URL: ${processedUrl.url}\n`;
 		outputInput.value = "Loading URL content...";
 
 		try {
@@ -142,7 +138,7 @@ async function validateAndMatch() {
 
 	if (!sourceText.trim()) {
 		setMatchCount(0);
-		outputInput.value = sourcePrefix ? `${sourcePrefix}0` : "0";
+		outputInput.value = "0";
 		return;
 	}
 
@@ -150,7 +146,7 @@ async function validateAndMatch() {
 
 	if (matches.length === 0) {
 		setMatchCount(0);
-		outputInput.value = sourcePrefix ? `${sourcePrefix}0` : "0";
+		outputInput.value = "0";
 		return;
 	}
 
@@ -160,9 +156,7 @@ async function validateAndMatch() {
 		.map((match, index) => `Match ${index + 1}: ${match[0]}`)
 		.join(", ");
 
-	outputInput.value = sourcePrefix
-		? `${sourcePrefix}${formattedMatches}`
-		: formattedMatches;
+	outputInput.value = formattedMatches;
 }
 
 function scheduleValidation() {
