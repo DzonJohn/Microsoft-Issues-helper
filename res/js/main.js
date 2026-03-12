@@ -3,6 +3,8 @@ const regexInput = document.getElementById("regexText");
 const sampleInput = document.getElementById("sampleText");
 const outputInput = document.getElementById("outputText");
 const matchCountDigit = document.querySelector(".zero-spinner-digit");
+let latestValidationRequestId = 0;
+let validationTimeoutId;
 
 const urlService = {
 	process(urlText) {
@@ -19,6 +21,17 @@ const urlService = {
 		}
 	}
 };
+
+async function fetchTextFromUrl(url) {
+	const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+	const response = await fetch(proxyUrl);
+
+	if (!response.ok) {
+		throw new Error(`Service request failed (${response.status}).`);
+	}
+
+	return response.text();
+}
 
 function setMatchCount(count) {
 	if (matchCountDigit) {
@@ -73,7 +86,8 @@ function parseRegex(patternText) {
 	}
 }
 
-function validateAndMatch() {
+async function validateAndMatch() {
+	const requestId = ++latestValidationRequestId;
 	const processedUrl = urlService.process(urlInput.value);
 
 	if (processedUrl.error) {
@@ -82,7 +96,7 @@ function validateAndMatch() {
 		return;
 	}
 
-	if (!regexInput.value.trim() || !sampleInput.value.trim()) {
+	if (!regexInput.value.trim()) {
 		setMatchCount(0);
 		outputInput.value = processedUrl.url
 			? `Service URL: ${processedUrl.url}\n0`
@@ -101,13 +115,42 @@ function validateAndMatch() {
 	const regex = parsed.regex.global
 		? parsed.regex
 		: new RegExp(parsed.regex.source, `${parsed.regex.flags}g`);
-	const matches = Array.from(sampleInput.value.matchAll(regex));
+
+	let sourceText = sampleInput.value;
+	let sourcePrefix = "";
+
+	if (processedUrl.url) {
+		sourcePrefix = `Service URL: ${processedUrl.url}\n`;
+		outputInput.value = "Loading URL content...";
+
+		try {
+			sourceText = await fetchTextFromUrl(processedUrl.url);
+		} catch (error) {
+			if (requestId !== latestValidationRequestId) {
+				return;
+			}
+
+			setMatchCount(0);
+			outputInput.value = `Unable to read URL through service: ${error.message}`;
+			return;
+		}
+	}
+
+	if (requestId !== latestValidationRequestId) {
+		return;
+	}
+
+	if (!sourceText.trim()) {
+		setMatchCount(0);
+		outputInput.value = sourcePrefix ? `${sourcePrefix}0` : "0";
+		return;
+	}
+
+	const matches = Array.from(sourceText.matchAll(regex));
 
 	if (matches.length === 0) {
 		setMatchCount(0);
-		outputInput.value = processedUrl.url
-			? `Service URL: ${processedUrl.url}\n0`
-			: "0";
+		outputInput.value = sourcePrefix ? `${sourcePrefix}0` : "0";
 		return;
 	}
 
@@ -117,13 +160,20 @@ function validateAndMatch() {
 		.map((match, index) => `Match ${index + 1}: ${match[0]}`)
 		.join(", ");
 
-	outputInput.value = processedUrl.url
-		? `Service URL: ${processedUrl.url}\n${formattedMatches}`
+	outputInput.value = sourcePrefix
+		? `${sourcePrefix}${formattedMatches}`
 		: formattedMatches;
 }
 
-urlInput.addEventListener("input", validateAndMatch);
-regexInput.addEventListener("input", validateAndMatch);
-sampleInput.addEventListener("input", validateAndMatch);
+function scheduleValidation() {
+	clearTimeout(validationTimeoutId);
+	validationTimeoutId = setTimeout(() => {
+		void validateAndMatch();
+	}, 250);
+}
 
-validateAndMatch();
+urlInput.addEventListener("input", scheduleValidation);
+regexInput.addEventListener("input", scheduleValidation);
+sampleInput.addEventListener("input", scheduleValidation);
+
+void validateAndMatch();
