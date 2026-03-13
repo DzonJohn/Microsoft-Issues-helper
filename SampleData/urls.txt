@@ -1,0 +1,5 @@
+https://example.com/page
+https://docs.microsoft.com/en-us/dotnet/
+https://github.com/DzonJohn/Microsoft-Issues-helper
+https://learn.microsoft.com/en-us/aspnet/core/
+https://api.github.com/repos/dotnet/runtime

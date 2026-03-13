@@ -1,0 +1,5 @@
+alice@example.com
+bob.smith@contoso.org
+carol+tag@fabrikam.net
+invalid-email
+dave@sub.domain.co.uk

@@ -53,7 +53,8 @@ h1 {
 }
 
 input[type="text"],
-textarea {
+textarea,
+select {
 	width: 100%;
 	padding: 12px 14px;
 	font-size: 1rem;
@@ -72,8 +73,23 @@ textarea {
 	overflow: auto;
 }
 
+select {
+	background: #fff;
+	cursor: pointer;
+}
+
 .wide-field {
 	grid-column: 1 / -1;
+}
+
+.sample-row {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.sample-row textarea {
+	margin-top: 0;
 }
 
 textarea#outputText {
