@@ -19,7 +19,7 @@ body {
 
 .form-grid {
 	display: grid;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
+	grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
 	gap: 16px;
 	margin-top: 20px;
 }
@@ -31,7 +31,7 @@ body {
 	display: grid;
 	place-items: center;
 	border-radius: 50%;
-	border: 4px solid #93c5fd;
+	border: 4px solid #ff3300;
 	background: radial-gradient(circle at 30% 30%, #ffffff, #dbeafe);
 	overflow: hidden;
 }
@@ -41,7 +41,7 @@ body {
 	font-size: 3.5rem;
 	font-weight: 700;
 	line-height: 1;
-	color: #1e3a8a;
+	color: #1ec039;
 	transform-origin: center center;
 	animation: spinZero 1.4s linear infinite;
 }
