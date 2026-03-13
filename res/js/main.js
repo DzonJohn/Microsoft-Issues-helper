@@ -3,6 +3,7 @@ const regexInput = document.getElementById("regexText");
 const sampleInput = document.getElementById("sampleText");
 const outputInput = document.getElementById("outputText");
 const matchCountDigit = document.querySelector(".zero-spinner-digit");
+const sampleFileSelect = document.getElementById("sampleFileSelect");
 let latestValidationRequestId = 0;
 let validationTimeoutId;
 
@@ -166,8 +167,66 @@ function scheduleValidation() {
 	}, 250);
 }
 
+// --- Sample data file selector ---
+
+async function loadFileList() {
+	if (!sampleFileSelect) {
+		return;
+	}
+
+	try {
+		const response = await fetch("/api/files");
+
+		if (!response.ok) {
+			return;
+		}
+
+		const files = await response.json();
+
+		// Clear all options except the placeholder
+		while (sampleFileSelect.options.length > 1) {
+			sampleFileSelect.remove(1);
+		}
+
+		for (const name of files) {
+			const option = document.createElement("option");
+			option.value = name;
+			option.textContent = name;
+			sampleFileSelect.appendChild(option);
+		}
+	} catch {
+		// Service not available — file selector stays empty
+	}
+}
+
+async function onSampleFileChange() {
+	const fileName = sampleFileSelect ? sampleFileSelect.value : "";
+
+	if (!fileName) {
+		return;
+	}
+
+	try {
+		const response = await fetch(`/api/files/${encodeURIComponent(fileName)}`);
+
+		if (!response.ok) {
+			return;
+		}
+
+		sampleInput.value = await response.text();
+		scheduleValidation();
+	} catch {
+		// Service not available — leave sample text unchanged
+	}
+}
+
+if (sampleFileSelect) {
+	sampleFileSelect.addEventListener("change", () => { void onSampleFileChange(); });
+}
+
 urlInput.addEventListener("input", scheduleValidation);
 regexInput.addEventListener("input", scheduleValidation);
 sampleInput.addEventListener("input", scheduleValidation);
 
+void loadFileList();
 void validateAndMatch();
