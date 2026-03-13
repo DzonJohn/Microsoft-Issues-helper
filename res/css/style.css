@@ -17,6 +17,13 @@ body {
 	text-align: center;
 }
 
+.form-grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 16px;
+	margin-top: 20px;
+}
+
 .zero-spinner {
 	width: 88px;
 	height: 88px;
@@ -45,11 +52,12 @@ h1 {
 	line-height: 1.1;
 }
 
-input[type="text"] {
+input[type="text"],
+textarea {
 	width: 100%;
 	padding: 12px 14px;
-	margin-top: 20px;
 	font-size: 1rem;
+	font-family: inherit;
 	border: 1px solid #c6ccd8;
 	border-radius: 8px;
 }
@@ -58,18 +66,29 @@ input[type="text"]:read-only {
 	background: #eef2f9;
 }
 
-textarea#outputText {
-	width: 100%;
-	padding: 12px 14px;
-	margin-top: 20px;
-	font-size: 1rem;
+textarea {
 	line-height: 1.45;
-	border: 1px solid #c6ccd8;
-	border-radius: 8px;
-	background: #eef2f9;
 	resize: vertical;
-	min-height: 140px;
 	overflow: auto;
+}
+
+.wide-field {
+	grid-column: 1 / -1;
+}
+
+textarea#outputText {
+	background: #eef2f9;
+	min-height: 140px;
+}
+
+@media (max-width: 700px) {
+	.form-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.wide-field {
+		grid-column: auto;
+	}
 }
 
 @keyframes spinZero {
