@@ -1,4 +1,3 @@
-const urlInput = document.getElementById("urlText");
 const regexInput = document.getElementById("regexText");
 const sampleInput = document.getElementById("sampleText");
 const outputInput = document.getElementById("outputText");
@@ -6,33 +5,6 @@ const matchCountDigit = document.querySelector(".zero-spinner-digit");
 const sampleFileSelect = document.getElementById("sampleFileSelect");
 let latestValidationRequestId = 0;
 let validationTimeoutId;
-
-const urlService = {
-	process(urlText) {
-		const trimmed = urlText.trim();
-
-		if (!trimmed) {
-			return { url: "" };
-		}
-
-		try {
-			return { url: new URL(trimmed).toString() };
-		} catch {
-			return { error: "Invalid URL for service input." };
-		}
-	}
-};
-
-async function fetchTextFromUrl(url) {
-	const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
-	const response = await fetch(proxyUrl);
-
-	if (!response.ok) {
-		throw new Error(`Service request failed (${response.status}).`);
-	}
-
-	return response.text();
-}
 
 function setMatchCount(count) {
 	if (matchCountDigit) {
@@ -89,13 +61,6 @@ function parseRegex(patternText) {
 
 async function validateAndMatch() {
 	const requestId = ++latestValidationRequestId;
-	const processedUrl = urlService.process(urlInput.value);
-
-	if (processedUrl.error) {
-		setMatchCount(0);
-		outputInput.value = processedUrl.error;
-		return;
-	}
 
 	if (!regexInput.value.trim()) {
 		setMatchCount(0);
@@ -115,23 +80,7 @@ async function validateAndMatch() {
 		? parsed.regex
 		: new RegExp(parsed.regex.source, `${parsed.regex.flags}g`);
 
-	let sourceText = sampleInput.value;
-
-	if (processedUrl.url) {
-		outputInput.value = "Loading URL content...";
-
-		try {
-			sourceText = await fetchTextFromUrl(processedUrl.url);
-		} catch (error) {
-			if (requestId !== latestValidationRequestId) {
-				return;
-			}
-
-			setMatchCount(0);
-			outputInput.value = `Unable to read URL through service: ${error.message}`;
-			return;
-		}
-	}
+	const sourceText = sampleInput.value;
 
 	if (requestId !== latestValidationRequestId) {
 		return;
@@ -224,7 +173,6 @@ if (sampleFileSelect) {
 	sampleFileSelect.addEventListener("change", () => { void onSampleFileChange(); });
 }
 
-urlInput.addEventListener("input", scheduleValidation);
 regexInput.addEventListener("input", scheduleValidation);
 sampleInput.addEventListener("input", scheduleValidation);
 

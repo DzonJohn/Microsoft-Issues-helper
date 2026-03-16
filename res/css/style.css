@@ -13,13 +13,13 @@ body {
 }
 
 .container {
-	width: min(90%, 600px);
+	width: min(94%, 1100px);
 	text-align: center;
 }
 
 .form-grid {
 	display: grid;
-	grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+	grid-template-columns: minmax(0, 1fr);
 	gap: 16px;
 	margin-top: 20px;
 }
@@ -71,6 +71,7 @@ textarea {
 	line-height: 1.45;
 	resize: vertical;
 	overflow: auto;
+	min-height: 280px;
 }
 
 select {
@@ -94,7 +95,7 @@ select {
 
 textarea#outputText {
 	background: #eef2f9;
-	min-height: 140px;
+	min-height: 220px;
 }
 
 @media (max-width: 700px) {
