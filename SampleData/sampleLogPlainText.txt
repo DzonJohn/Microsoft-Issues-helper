@@ -1,0 +1,112 @@
+2024-06-10 09:15:23 INFO User 'alice' logged in from IP 192.168.1.10 using MFA challenge ID 9f13b2, browser session renewed for 8 hours, and role claims refreshed successfully.
+2024-06-10 09:16:01 WARN Disk space low on /dev/sda1 at 88% utilization (12.4 GB remaining), write throughput throttling may begin if growth continues for the next 15 minutes.
+2024-06-10 09:16:45 ERROR Failed to connect to database server sql-prod-01:1433 after 3 retry attempts using policy ExponentialBackoff(200ms, 2s, 5s); request correlationId=8ad9aa97-7adf-4f07-a66f-8f51b19cf0e1.
+System.Data.SqlClient.SqlException (0x80131904): A network-related or instance-specific error occurred while establishing a connection to SQL Server.
+	at System.Data.SqlClient.SqlInternalConnectionTds..ctor(DbConnectionPoolIdentity identity, SqlConnectionString connectionOptions, SqlCredential credential)
+	at System.Data.SqlClient.SqlConnectionFactory.CreateConnection(DbConnectionOptions options, DbConnectionPoolKey poolKey, Object providerInfo)
+	at Contoso.Orders.Data.SqlOrderRepository.OpenConnectionAsync(CancellationToken cancellationToken) in C:\src\Contoso.Orders\Data\SqlOrderRepository.cs:line 74
+	at Contoso.Orders.Services.OrderSyncService.RunBatchAsync(DateTimeOffset windowStart, DateTimeOffset windowEnd, CancellationToken cancellationToken) in C:\src\Contoso.Orders\Services\OrderSyncService.cs:line 142
+2024-06-10 09:17:12 INFO Scheduled backup started for tenant group 'north-europe', snapshot policy 'daily-retain-14', estimated data size 24.8 GB, compression enabled.
+2024-06-10 09:17:55 INFO User 'bob' logged out after 00:48:22 active session; pending notifications marked as delivered and API token invalidated.
+2024-06-10 09:18:30 INFO File 'report.pdf' uploaded by 'carol' (3.7 MB, SHA256=be58f1...e19a), malware scan status clean, stored at /files/2024/06/report.pdf.
+2024-06-10 09:19:02 INFO User 'dave' changed password; password policy checks passed (length, complexity, breached-password lookup) and all refresh tokens revoked.
+2024-06-10 09:19:47 WARN High memory usage detected: process worker-2 at 78% private bytes (2.3 GB of 3.0 GB limit), GC pause trend increasing during report generation.
+2024-06-10 09:20:15 INFO User 'eve' logged in from IP 192.168.1.15 with device fingerprint a2f4c9, trusted device cookie accepted, and audit event persisted.
+2024-06-10 09:20:59 INFO Email sent to 'frank@example.com' via smtp-relay-02 in 412 ms; template='password-reset', locale='en-US', messageId=<6ef7a2@contoso>.
+2024-06-10 09:21:33 ERROR Permission denied for user 'grace' while attempting DELETE on resource '/api/admin/users/42'; required scope 'users.delete' is missing.
+System.UnauthorizedAccessException: Access to the requested operation is denied for the current principal.
+	at Contoso.Auth.Authorization.PermissionEvaluator.AssertAllowed(ClaimsPrincipal principal, String requiredScope) in C:\src\Contoso.Auth\Authorization\PermissionEvaluator.cs:line 58
+	at Contoso.Api.Controllers.UsersController.DeleteUserAsync(Int32 userId, CancellationToken cancellationToken) in C:\src\Contoso.Api\Controllers\UsersController.cs:line 211
+2024-06-10 09:22:10 INFO System update completed: 6 packages patched, schema migration v2024.06.10.1 applied, and warmup checks passed in 00:01:14.
+2024-06-10 09:22:45 INFO User 'heidi' logged out manually from settings page; remembered device list unchanged and security history updated.
+2024-06-10 09:23:20 WARN CPU temperature high on node app-node-03 at 84C for 120 seconds; fan profile switched to aggressive mode automatically.
+2024-06-10 09:23:55 INFO User 'ivan' logged in from IP 192.168.1.20; geolocation matched expected region and conditional access policy state='allow'.
+2024-06-10 09:24:30 INFO File 'data.csv' downloaded by 'judy' (9,421 rows exported); one-time signed URL issued with 5-minute expiration.
+2024-06-10 09:25:05 ERROR Network timeout while calling https://api.partner.example/v2/orders after 30,000 ms; outbound request id=req-2b7a6f, retry budget exhausted.
+System.Net.Http.HttpRequestException: The HTTP request timed out after configured timeout 00:00:30.
+ ---> System.TimeoutException: The operation has timed out.
+	at System.Net.Http.HttpConnection.SendAsync(HttpRequestMessage request, Boolean async, CancellationToken cancellationToken)
+	at Contoso.Integrations.PartnerClient.SendWithRetryAsync(HttpRequestMessage request, CancellationToken cancellationToken) in C:\src\Contoso.Integrations\PartnerClient.cs:line 133
+	at Contoso.Workers.PartnerSyncWorker.ExecuteAsync(CancellationToken stoppingToken) in C:\src\Contoso.Workers\PartnerSyncWorker.cs:line 96
+2024-06-10 09:25:40 INFO User 'ken' changed password and acknowledged security recommendation banner; risk score recalculated from 0.42 to 0.19.
+2024-06-10 09:26:15 INFO User 'leo' logged in from IP 192.168.1.25 via mobile app v5.3.1; refresh token rotated and push channel re-registered.
+2024-06-10 09:26:50 INFO Email sent to 'mallory@example.com' with attachment 'invoice-2391.pdf' (214 KB), delivery provider accepted request.
+2024-06-10 09:27:25 WARN Disk space low on /dev/sdb1 at 91% utilization (8.1 GB free), cleanup job queued with priority=high.
+2024-06-10 09:28:00 INFO User 'nancy' logged out due to idle timeout after 30 minutes; session cookie expired and background jobs canceled.
+2024-06-10 09:28:35 INFO File 'presentation.pptx' uploaded by 'oscar' (12.1 MB); thumbnail extraction completed and sharing permissions defaulted to team-only.
+2024-06-10 09:29:10 ERROR Failed to authenticate user 'peggy' because provided TOTP code failed validation 5 times within lockout window.
+2024-06-10 09:29:45 INFO Scheduled backup completed successfully for cluster primary-east; 24.8 GB processed, dedupe ratio 1.9x, duration 00:02:31.
+2024-06-10 09:30:20 INFO User 'quinn' logged in from IP 192.168.1.30 after password reset flow; anomaly detector score low (0.07).
+2024-06-10 09:30:55 WARN High memory usage detected in reporting-service: 82% working set, cache eviction policy switched to compact mode.
+2024-06-10 09:31:30 INFO User 'ruth' changed password; backup codes regenerated and previous backup codes invalidated.
+2024-06-10 09:32:05 INFO File 'invoice.docx' downloaded by 'sam' through secure link token id=dl-5f1a3, audit trail recorded.
+2024-06-10 09:32:40 ERROR Permission denied for user 'trent' on endpoint '/api/admin/settings'; role='Editor' lacks required permission 'settings.write'.
+2024-06-10 09:33:15 INFO System update started on app pool 'primary'; draining active connections with max grace period 90 seconds.
+2024-06-10 09:33:50 INFO User 'ursula' logged out from all devices via security settings; 3 active sessions terminated.
+2024-06-10 09:34:25 WARN CPU temperature high on app-node-01 at 86C; thermal event logged and autoscale recommendation emitted.
+2024-06-10 09:35:00 INFO User 'victor' logged in from IP 192.168.1.35; SSO token exchange completed against identity provider 'aad-prod'.
+2024-06-10 09:35:35 INFO Email sent to 'wendy@example.com' for weekly digest campaign batchId=cmp-20240610-01, queue latency 233 ms.
+2024-06-10 09:36:10 INFO User 'xavier' changed password and updated account recovery phone number ending in 4421.
+2024-06-10 09:36:45 WARN Disk space low on /dev/sdc1 at 89% utilization; archival task moved 1.2 GB to cold storage.
+2024-06-10 09:37:20 INFO User 'yvonne' logged out, browser session closed normally, pending drafts auto-saved.
+2024-06-10 09:37:55 INFO File 'summary.xlsx' uploaded by 'zack' (2.1 MB); spreadsheet validation passed with 0 schema warnings.
+2024-06-10 09:38:30 ERROR Failed to connect to database server sql-prod-01 during health check probe hc-771, connection open timeout was 5,000 ms.
+2024-06-10 09:39:05 INFO Scheduled backup started with snapshot tag 'hourly-0939'; replication target region='west-europe'.
+2024-06-10 09:39:40 INFO User 'alice' logged in from IP 192.168.1.40; previous session from same subnet resumed seamlessly.
+2024-06-10 09:40:15 INFO Email sent to 'bob@example.com' for workflow notification itemId=wf-8843; SMTP response code 250 accepted.
+2024-06-10 09:40:50 WARN High memory usage detected on worker-1 at 79%; large object heap compaction scheduled for next maintenance window.
+2024-06-10 09:41:25 INFO User 'carol' changed password and enrolled new FIDO2 key 'YubiKey-Office'.
+2024-06-10 09:42:00 INFO File 'notes.txt' downloaded by 'dave' with inline preview enabled; content-disposition set to attachment.
+2024-06-10 09:42:35 ERROR Network timeout contacting cache endpoint redis-cache-01:6380 while executing command HMGET user:1342 profile.
+2024-06-10 09:43:10 INFO User 'eve' logged out and manually cleared remembered sessions list.
+2024-06-10 09:43:45 INFO System update completed on app pool 'primary'; no regressions detected by post-deploy smoke tests.
+2024-06-10 09:44:20 WARN CPU temperature high on app-node-02 at 83C; monitoring alert severity raised to medium.
+2024-06-10 09:44:55 INFO User 'frank' logged in from IP 192.168.1.45, device posture check passed, and policy decision='allow'.
+2024-06-10 09:45:30 INFO File 'budget.xls' uploaded by 'grace' (5.4 MB); macro scanning completed with result='no threats detected'.
+2024-06-10 09:46:05 ERROR Permission denied for user 'heidi' while requesting export of tenant financial data; missing claim 'reports.export.secure'.
+2024-06-10 09:46:40 INFO Scheduled backup completed for tenant group 'north-europe'; checksum verification successful on all chunks.
+2024-06-10 09:47:15 INFO User 'ivan' changed password, confirmed via email link, and notification sent to secondary address.
+2024-06-10 09:47:50 WARN Disk space low on /dev/sdd1 at 93% utilization; emergency cleanup threshold approaching.
+2024-06-10 09:48:25 INFO User 'judy' logged out after profile settings update, session invalidation propagated to edge cache.
+2024-06-10 09:49:00 INFO File 'contract.pdf' downloaded by 'ken' (view token vt-7a13d) with watermark 'Confidential'.
+2024-06-10 09:49:35 ERROR Failed to authenticate user 'leo' due to account lockout policy after repeated invalid password attempts from IP 192.168.1.103.
+2024-06-10 09:50:10 INFO System update started: rolling restart initiated across 3 instances with health-gated progression.
+2024-06-10 09:50:45 INFO User 'mallory' logged in from IP 192.168.1.50; security challenge completed using SMS fallback.
+2024-06-10 09:51:20 INFO Email sent to 'nancy@example.com' for document approval reminder, trace id=mail-3310f2.
+2024-06-10 09:51:55 WARN High memory usage detected: API gateway process at 81%, endpoint latency p95 increased from 180 ms to 320 ms.
+2024-06-10 09:52:30 INFO User 'oscar' changed password and refreshed OAuth consent grants for connected applications.
+2024-06-10 09:53:05 INFO File 'agenda.docx' uploaded by 'peggy' (418 KB); metadata indexing completed in 67 ms.
+2024-06-10 09:53:40 ERROR Permission denied for user 'quinn' on operation 'tenant.delete'; operation was blocked and incident ticket INC-240610-117 created.
+2024-06-10 09:54:15 INFO Scheduled backup started for database shard group 'sg-04'; expected completion within 4 minutes.
+2024-06-10 09:54:50 INFO User 'ruth' logged out from web portal; CSRF token invalidated and telemetry flush completed.
+2024-06-10 09:55:25 WARN CPU temperature high on node app-node-04 at 85C sustained for 95 seconds.
+2024-06-10 09:56:00 INFO User 'sam' logged in from IP 192.168.1.55 via desktop app build 2024.6.1021.
+2024-06-10 09:56:35 INFO File 'minutes.txt' downloaded by 'trent'; line ending normalization applied for compatibility.
+2024-06-10 09:57:10 ERROR Network timeout when posting webhook event evt-9012 to https://hooks.partner.example/ingest; no 2xx response received.
+2024-06-10 09:57:45 INFO User 'ursula' changed password and updated security questions per policy refresh.
+2024-06-10 09:58:20 INFO Email sent to 'victor@example.com' for account activity summary; open tracking disabled by preference.
+2024-06-10 09:58:55 WARN Disk space low on /dev/sde1 at 90% utilization; low-priority logs scheduled for pruning.
+2024-06-10 09:59:30 INFO User 'wendy' logged out after 01:12:09 session; unsent drafts retained for 7 days.
+2024-06-10 10:00:05 INFO File 'plan.xlsx' uploaded by 'xavier' (1.8 MB); workbook formulas recalculated and cached.
+2024-06-10 10:00:40 ERROR Failed to connect to database server sql-replica-02 during read query execution for dashboard load.
+2024-06-10 10:01:15 INFO Scheduled backup completed with retention tag 'daily-retain-14'; remote verification completed.
+2024-06-10 10:01:50 INFO User 'yvonne' changed password; unusual login detector reset baseline for this account.
+2024-06-10 10:02:25 WARN High memory usage detected on export-worker at 84%; concurrency limit reduced from 8 to 5.
+2024-06-10 10:03:00 INFO User 'zack' logged in from IP 192.168.1.60, session id=s-20240610-4452, policy='standard'.
+2024-06-10 10:03:35 INFO Email sent to 'alice@example.com' for invoice notification inv-88014, provider route=primary.
+2024-06-10 10:04:10 INFO File 'summary.docx' downloaded by 'bob'; DLP policy check returned 'allow'.
+2024-06-10 10:04:45 ERROR Permission denied for user 'carol' while attempting to modify billing settings for tenant='contoso-nl'.
+2024-06-10 10:05:20 INFO System update completed for release 2024.06.10.5; 3 services restarted and health checks green.
+2024-06-10 10:05:55 WARN CPU temperature high on app-node-05 at 82C; fan speed adjusted automatically.
+2024-06-10 10:06:30 INFO User 'dave' logged out from mobile app; push notification token was deregistered.
+2024-06-10 10:07:05 INFO File 'report.xls' uploaded by 'eve' (6.2 MB); import pre-validation completed with 2 non-blocking warnings.
+2024-06-10 10:07:40 ERROR Failed to authenticate user 'frank' because identity provider token signature validation failed.
+System.Security.Cryptography.CryptographicException: Signature validation failed for JWT token, key id 'kid-771' not found in current key set.
+	at Microsoft.IdentityModel.Tokens.Validators.ValidateSignature(String token, TokenValidationParameters validationParameters)
+	at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateTokenAsync(String token, TokenValidationParameters validationParameters)
+	at Contoso.Auth.TokenValidationService.ValidateAsync(String jwt, CancellationToken cancellationToken) in C:\src\Contoso.Auth\TokenValidationService.cs:line 89
+	at Contoso.Api.Middleware.AuthenticationMiddleware.InvokeAsync(HttpContext context) in C:\src\Contoso.Api\Middleware\AuthenticationMiddleware.cs:line 47
+2024-06-10 10:08:15 INFO Scheduled backup started with throttled I/O mode due to concurrent ETL job and maintenance policy.
+2024-06-10 10:08:50 INFO User 'grace' changed password and confirmed change via security center workflow id=scw-9912.
+2024-06-10 10:09:25 WARN Disk space low on /dev/sdf1 at 92% utilization; automatic archival is active and processing oldest snapshots.
+2024-06-10 10:10:00 INFO User 'heidi' logged in from IP 192.168.1.65; account reputation normal and no additional challenge required.

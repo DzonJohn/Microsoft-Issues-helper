@@ -1,0 +1,39 @@
+[
+    {
+        "timestamp": "2024-06-10T08:15:27Z",
+        "level": "INFO",
+        "message": "Application started",
+        "context": {
+            "user": "system",
+            "module": "startup"
+        }
+    },
+    {
+        "timestamp": "2024-06-10T08:16:03Z",
+        "level": "WARN",
+        "message": "Configuration file missing, using defaults",
+        "context": {
+            "user": "system",
+            "module": "config"
+        }
+    },
+    {
+        "timestamp": "2024-06-10T08:17:12Z",
+        "level": "ERROR",
+        "message": "Failed to connect to database",
+        "context": {
+            "user": "admin",
+            "module": "database",
+            "errorCode": "DB_CONN_01"
+        }
+    },
+    {
+        "timestamp": "2024-06-10T08:18:45Z",
+        "level": "INFO",
+        "message": "User login successful",
+        "context": {
+            "user": "jdoe",
+            "module": "auth"
+        }
+    }
+]
