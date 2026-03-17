@@ -153,6 +153,28 @@ function syncHighlightScroll() {
 	sampleHighlight.scrollLeft = sampleInput.scrollLeft;
 }
 
+function getLineNumberForIndex(sourceText, index) {
+	if (index <= 0) {
+		return 1;
+	}
+
+	let lineNumber = 1;
+	let searchFrom = 0;
+
+	while (searchFrom < index) {
+		const newlineIndex = sourceText.indexOf("\n", searchFrom);
+
+		if (newlineIndex === -1 || newlineIndex >= index) {
+			break;
+		}
+
+		lineNumber += 1;
+		searchFrom = newlineIndex + 1;
+	}
+
+	return lineNumber;
+}
+
 async function validateAndMatch() {
 	const requestId = ++latestValidationRequestId;
 	const sourceText = sampleInput.value;
@@ -199,11 +221,25 @@ async function validateAndMatch() {
 
 	setMatchCount(matches.length);
 
-	const formattedMatches = matches
-		.map((match, index) => `Match ${index + 1}: ${match[0]}`)
-		.join(", ");
+	const lineCounts = new Map();
 
-	outputInput.value = formattedMatches;
+	for (const match of matches) {
+		if (typeof match.index !== "number") {
+			continue;
+		}
+
+		const lineNumber = getLineNumberForIndex(sourceText, match.index);
+		lineCounts.set(lineNumber, (lineCounts.get(lineNumber) ?? 0) + 1);
+	}
+
+	const lineBreakdown = Array.from(lineCounts.entries())
+		.sort((a, b) => a[0] - b[0])
+		.map(([lineNumber, count]) => `Line ${lineNumber}: ${count} match${count === 1 ? "" : "es"}`);
+
+	outputInput.value = [
+		`Found ${matches.length} match${matches.length === 1 ? "" : "es"}.`,
+		...lineBreakdown
+	].join("\n");
 	renderHighlightedSample(sourceText, matches);
 }
 
