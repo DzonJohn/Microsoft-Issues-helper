@@ -87,19 +87,9 @@ select {
 	grid-column: 1 / -1;
 }
 
-.sample-row {
-	display: flex;
-	flex-direction: column;
-	gap: 8px;
-	grid-column: 1 / 2;
-}
-
-.sample-row textarea {
-	margin-top: 0;
-}
-
 .sample-text-stack {
 	position: relative;
+	grid-column: 1 / 2;
 	min-height: 380px;
 	overflow: hidden;
 	border: 1px solid #c6ccd8;
@@ -167,7 +157,7 @@ textarea#sampleText {
 		grid-column: auto;
 	}
 
-	.sample-row,
+	.sample-text-stack,
 	textarea#outputText,
 	#regexText {
 		grid-column: auto;
