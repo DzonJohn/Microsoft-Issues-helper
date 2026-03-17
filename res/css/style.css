@@ -24,7 +24,7 @@ body {
 	margin-top: 20px;
 }
 
-.form-grid > input[type="text"] {
+#regexText {
 	grid-column: 1 / -1;
 }
 
@@ -83,24 +83,94 @@ select {
 	cursor: pointer;
 }
 
+.wide-field {
+	grid-column: 1 / -1;
+}
+
 .sample-row {
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
+	grid-column: 1 / 2;
 }
 
 .sample-row textarea {
 	margin-top: 0;
 }
 
+.sample-text-stack {
+	position: relative;
+	min-height: 380px;
+	overflow: hidden;
+	border: 1px solid #c6ccd8;
+	border-radius: 8px;
+	background: #fff;
+}
+
+.sample-highlight,
+#sampleText {
+	position: absolute;
+	inset: 0;
+	margin: 0;
+	padding: 12px 14px;
+	font-size: 1rem;
+	line-height: 1.45;
+	font-family: inherit;
+	white-space: pre-wrap;
+	word-break: break-word;
+	overflow: auto;
+}
+
+.sample-highlight {
+	pointer-events: none;
+	color: #1f2937;
+	background: #fff;
+}
+
+.sample-highlight .regex-hit {
+	background: #dc2626;
+	color: #ffffff;
+	border-radius: 3px;
+	padding: 0 1px;
+}
+
+#sampleText {
+	border: 0;
+	border-radius: 0;
+	background: transparent;
+	color: transparent;
+	caret-color: #111827;
+	min-height: 100%;
+	z-index: 1;
+}
+
+#sampleText::selection {
+	background: rgba(59, 130, 246, 0.3);
+}
+
 textarea#outputText {
 	background: #eef2f9;
-	min-height: 220px;
+	min-height: 380px;
+	grid-column: 2 / 3;
+}
+
+textarea#sampleText {
+	min-height: 380px;
 }
 
 @media (max-width: 700px) {
 	.form-grid {
 		grid-template-columns: 1fr;
+	}
+
+	.wide-field {
+		grid-column: auto;
+	}
+
+	.sample-row,
+	textarea#outputText,
+	#regexText {
+		grid-column: auto;
 	}
 }
 

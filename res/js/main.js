@@ -1,5 +1,6 @@
 const regexInput = document.getElementById("regexText");
 const sampleInput = document.getElementById("sampleText");
+const sampleHighlight = document.getElementById("sampleHighlight");
 const outputInput = document.getElementById("outputText");
 const matchCountDigit = document.querySelector(".zero-spinner-digit");
 const sampleFileSelect = document.getElementById("sampleFileSelect");
@@ -59,12 +60,75 @@ function parseRegex(patternText) {
 	}
 }
 
+function escapeHtml(value) {
+	return value
+		.replaceAll("&", "&amp;")
+		.replaceAll("<", "&lt;")
+		.replaceAll(">", "&gt;")
+		.replaceAll('"', "&quot;")
+		.replaceAll("'", "&#39;");
+}
+
+function renderHighlightedSample(sourceText, matches) {
+	if (!sampleHighlight) {
+		return;
+	}
+
+	if (!sourceText) {
+		sampleHighlight.innerHTML = "";
+		return;
+	}
+
+	if (!matches || matches.length === 0) {
+		sampleHighlight.innerHTML = escapeHtml(sourceText);
+		return;
+	}
+
+	let cursor = 0;
+	const chunks = [];
+
+	for (const match of matches) {
+		const index = typeof match.index === "number" ? match.index : -1;
+		const text = typeof match[0] === "string" ? match[0] : "";
+
+		if (index < 0 || index < cursor) {
+			continue;
+		}
+
+		if (index > cursor) {
+			chunks.push(escapeHtml(sourceText.slice(cursor, index)));
+		}
+
+		if (text.length > 0) {
+			chunks.push(`<span class="regex-hit">${escapeHtml(text)}</span>`);
+			cursor = index + text.length;
+		}
+	}
+
+	if (cursor < sourceText.length) {
+		chunks.push(escapeHtml(sourceText.slice(cursor)));
+	}
+
+	sampleHighlight.innerHTML = chunks.join("");
+}
+
+function syncHighlightScroll() {
+	if (!sampleHighlight || !sampleInput) {
+		return;
+	}
+
+	sampleHighlight.scrollTop = sampleInput.scrollTop;
+	sampleHighlight.scrollLeft = sampleInput.scrollLeft;
+}
+
 async function validateAndMatch() {
 	const requestId = ++latestValidationRequestId;
+	const sourceText = sampleInput.value;
 
 	if (!regexInput.value.trim()) {
 		setMatchCount(0);
 		outputInput.value = "0";
+		renderHighlightedSample(sourceText, []);
 		return;
 	}
 
@@ -73,14 +137,13 @@ async function validateAndMatch() {
 	if (parsed.error) {
 		setMatchCount(0);
 		outputInput.value = parsed.error;
+		renderHighlightedSample(sourceText, []);
 		return;
 	}
 
 	const regex = parsed.regex.global
 		? parsed.regex
 		: new RegExp(parsed.regex.source, `${parsed.regex.flags}g`);
-
-	const sourceText = sampleInput.value;
 
 	if (requestId !== latestValidationRequestId) {
 		return;
@@ -89,6 +152,7 @@ async function validateAndMatch() {
 	if (!sourceText.trim()) {
 		setMatchCount(0);
 		outputInput.value = "0";
+		renderHighlightedSample(sourceText, []);
 		return;
 	}
 
@@ -97,6 +161,7 @@ async function validateAndMatch() {
 	if (matches.length === 0) {
 		setMatchCount(0);
 		outputInput.value = "0";
+		renderHighlightedSample(sourceText, []);
 		return;
 	}
 
@@ -107,6 +172,7 @@ async function validateAndMatch() {
 		.join(", ");
 
 	outputInput.value = formattedMatches;
+	renderHighlightedSample(sourceText, matches);
 }
 
 function scheduleValidation() {
@@ -175,6 +241,8 @@ if (sampleFileSelect) {
 
 regexInput.addEventListener("input", scheduleValidation);
 sampleInput.addEventListener("input", scheduleValidation);
+sampleInput.addEventListener("scroll", syncHighlightScroll);
 
 void loadFileList();
 void validateAndMatch();
+syncHighlightScroll();
