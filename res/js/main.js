@@ -4,8 +4,40 @@ const sampleHighlight = document.getElementById("sampleHighlight");
 const outputInput = document.getElementById("outputText");
 const matchCountDigit = document.querySelector(".zero-spinner-digit");
 const sampleFileSelect = document.getElementById("sampleFileSelect");
+const fallbackSampleFiles = [
+	"emails.txt",
+	"phone-numbers.txt",
+	"sampleData.json",
+	"sampleLogPlainText.txt",
+	"urls.txt"
+];
 let latestValidationRequestId = 0;
 let validationTimeoutId;
+
+function resetSampleFileOptions() {
+	if (!sampleFileSelect) {
+		return;
+	}
+
+	while (sampleFileSelect.options.length > 1) {
+		sampleFileSelect.remove(1);
+	}
+}
+
+function populateSampleFileOptions(files) {
+	if (!sampleFileSelect) {
+		return;
+	}
+
+	resetSampleFileOptions();
+
+	for (const name of files) {
+		const option = document.createElement("option");
+		option.value = name;
+		option.textContent = name;
+		sampleFileSelect.appendChild(option);
+	}
+}
 
 function setMatchCount(count) {
 	if (matchCountDigit) {
@@ -193,24 +225,18 @@ async function loadFileList() {
 		const response = await fetch("/api/files");
 
 		if (!response.ok) {
+			populateSampleFileOptions(fallbackSampleFiles);
 			return;
 		}
 
 		const files = await response.json();
+		const usableFiles = Array.isArray(files) && files.length > 0
+			? files
+			: fallbackSampleFiles;
 
-		// Clear all options except the placeholder
-		while (sampleFileSelect.options.length > 1) {
-			sampleFileSelect.remove(1);
-		}
-
-		for (const name of files) {
-			const option = document.createElement("option");
-			option.value = name;
-			option.textContent = name;
-			sampleFileSelect.appendChild(option);
-		}
+		populateSampleFileOptions(usableFiles);
 	} catch {
-		// Service not available — file selector stays empty
+		populateSampleFileOptions(fallbackSampleFiles);
 	}
 }
 
@@ -222,7 +248,11 @@ async function onSampleFileChange() {
 	}
 
 	try {
-		const response = await fetch(`/api/files/${encodeURIComponent(fileName)}`);
+		let response = await fetch(`/api/files/${encodeURIComponent(fileName)}`);
+
+		if (!response.ok) {
+			response = await fetch(`./SampleData/${encodeURIComponent(fileName)}`);
+		}
 
 		if (!response.ok) {
 			return;
@@ -231,7 +261,18 @@ async function onSampleFileChange() {
 		sampleInput.value = await response.text();
 		scheduleValidation();
 	} catch {
-		// Service not available — leave sample text unchanged
+		try {
+			const fallbackResponse = await fetch(`./SampleData/${encodeURIComponent(fileName)}`);
+
+			if (!fallbackResponse.ok) {
+				return;
+			}
+
+			sampleInput.value = await fallbackResponse.text();
+			scheduleValidation();
+		} catch {
+			// Fallback load failed — leave sample text unchanged
+		}
 	}
 }
 
