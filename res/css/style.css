@@ -19,9 +19,10 @@ body {
 
 .form-grid {
 	display: grid;
-	grid-template-columns: minmax(0, 1fr);
+	grid-template-columns: 1fr 1fr;
 	gap: 16px;
 	margin-top: 20px;
+	align-items: start;
 }
 
 .zero-spinner {
@@ -71,16 +72,22 @@ textarea {
 	line-height: 1.45;
 	resize: vertical;
 	overflow: auto;
-	min-height: 280px;
+	min-height: 420px;
+}
+
+.left-panel {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.left-panel input[type="text"] {
+	width: 100%;
 }
 
 select {
 	background: #fff;
 	cursor: pointer;
-}
-
-.wide-field {
-	grid-column: 1 / -1;
 }
 
 .sample-row {
@@ -95,7 +102,7 @@ select {
 
 textarea#outputText {
 	background: #eef2f9;
-	min-height: 220px;
+	min-height: 500px;
 }
 
 @media (max-width: 700px) {
@@ -103,8 +110,12 @@ textarea#outputText {
 		grid-template-columns: 1fr;
 	}
 
-	.wide-field {
-		grid-column: auto;
+	textarea {
+		min-height: 200px;
+	}
+
+	textarea#outputText {
+		min-height: 200px;
 	}
 }
 

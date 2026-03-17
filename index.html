@@ -12,14 +12,16 @@
         <h1>Regex matching validation</h1>
 
         <div class="form-grid">
-            <input type="text" id="regexText" placeholder="Regex pattern">
-            <div class="wide-field sample-row">
-                <select id="sampleFileSelect" aria-label="Select sample data file">
-                    <option value="">— select sample file —</option>
-                </select>
-                <textarea id="sampleText" class="wide-field" placeholder="sample text" rows="10"></textarea>
+            <div class="left-panel">
+                <input type="text" id="regexText" placeholder="Regex pattern">
+                <div class="sample-row">
+                    <select id="sampleFileSelect" aria-label="Select sample data file">
+                        <option value="">— select sample file —</option>
+                    </select>
+                    <textarea id="sampleText" placeholder="sample text" aria-label="Sample text input"></textarea>
+                </div>
             </div>
-            <textarea id="outputText" class="wide-field" placeholder="Output" readonly rows="8"></textarea>
+            <textarea id="outputText" placeholder="Output" readonly aria-label="Output"></textarea>
         </div>
     </main>
     <script src="res/js/main.js"></script>
