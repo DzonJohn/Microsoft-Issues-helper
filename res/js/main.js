@@ -4,6 +4,7 @@ const sampleHighlight = document.getElementById("sampleHighlight");
 const outputInput = document.getElementById("outputText");
 const matchCountDigit = document.querySelector(".zero-spinner-digit");
 const sampleFileSelect = document.getElementById("sampleFileSelect");
+const searchOtherFilesBtn = document.getElementById("searchOtherFilesBtn");
 const fallbackSampleFiles = [
 	"emails.txt",
 	"phone-numbers.txt",
@@ -175,6 +176,138 @@ function getLineNumberForIndex(sourceText, index) {
 	return lineNumber;
 }
 
+function getLineCounts(sourceText, matches) {
+	const lineCounts = new Map();
+
+	for (const match of matches) {
+		if (typeof match.index !== "number") {
+			continue;
+		}
+
+		const lineNumber = getLineNumberForIndex(sourceText, match.index);
+		lineCounts.set(lineNumber, (lineCounts.get(lineNumber) ?? 0) + 1);
+	}
+
+	return lineCounts;
+}
+
+function formatLineBreakdown(lineCounts) {
+	return Array.from(lineCounts.entries())
+		.sort((a, b) => a[0] - b[0])
+		.map(([lineNumber, count]) => `Line ${lineNumber}: ${count} match${count === 1 ? "" : "es"}`);
+}
+
+async function fetchSampleFileText(fileName) {
+	let response = await fetch(`/api/files/${encodeURIComponent(fileName)}`);
+
+	if (!response.ok) {
+		response = await fetch(`./SampleData/${encodeURIComponent(fileName)}`);
+	}
+
+	if (!response.ok) {
+		throw new Error(`Unable to load ${fileName}`);
+	}
+
+	return response.text();
+}
+
+async function getAvailableFiles() {
+	const optionFiles = sampleFileSelect
+		? Array.from(sampleFileSelect.options)
+			.slice(1)
+			.map((option) => option.value)
+			.filter(Boolean)
+		: [];
+
+	if (optionFiles.length > 0) {
+		return optionFiles;
+	}
+
+	try {
+		const response = await fetch("/api/files");
+
+		if (!response.ok) {
+			return fallbackSampleFiles;
+		}
+
+		const files = await response.json();
+		return Array.isArray(files) && files.length > 0 ? files : fallbackSampleFiles;
+	} catch {
+		return fallbackSampleFiles;
+	}
+}
+
+async function searchOtherFiles() {
+	const parsed = parseRegex(regexInput.value);
+
+	if (parsed.error) {
+		outputInput.value = parsed.error;
+		return;
+	}
+
+	const files = await getAvailableFiles();
+	const selectedFile = sampleFileSelect ? sampleFileSelect.value : "";
+	const otherFiles = files.filter((name) => name !== selectedFile);
+
+	if (otherFiles.length === 0) {
+		outputInput.value = "No other files available to search.";
+		return;
+	}
+
+	if (searchOtherFilesBtn) {
+		searchOtherFilesBtn.disabled = true;
+		searchOtherFilesBtn.textContent = "Searching...";
+	}
+
+	const regex = parsed.regex.global
+		? parsed.regex
+		: new RegExp(parsed.regex.source, `${parsed.regex.flags}g`);
+
+	const reportLines = [];
+	let filesWithMatches = 0;
+	let totalMatches = 0;
+
+	for (const fileName of otherFiles) {
+		try {
+			const fileText = await fetchSampleFileText(fileName);
+			const matches = Array.from(fileText.matchAll(regex));
+
+			if (matches.length === 0) {
+				continue;
+			}
+
+			filesWithMatches += 1;
+			totalMatches += matches.length;
+
+			reportLines.push(`${fileName}: ${matches.length} match${matches.length === 1 ? "" : "es"}`);
+
+			const lineBreakdown = formatLineBreakdown(getLineCounts(fileText, matches));
+			for (const line of lineBreakdown) {
+				reportLines.push(`  ${line}`);
+			}
+		} catch {
+			reportLines.push(`${fileName}: could not read file.`);
+		}
+	}
+
+	if (filesWithMatches === 0) {
+		outputInput.value = [
+			`Searched ${otherFiles.length} other file${otherFiles.length === 1 ? "" : "s"}.`,
+			"No matches found in other files."
+		].join("\n");
+	} else {
+		outputInput.value = [
+			`Found ${totalMatches} match${totalMatches === 1 ? "" : "es"} in ${filesWithMatches} other file${filesWithMatches === 1 ? "" : "s"}.`,
+			...reportLines
+		].join("\n");
+	}
+
+	if (searchOtherFilesBtn) {
+		searchOtherFilesBtn.disabled = false;
+		searchOtherFilesBtn.textContent = "Search other files";
+	}
+}
+
 async function validateAndMatch() {
 	const requestId = ++latestValidationRequestId;
 	const sourceText = sampleInput.value;
@@ -221,20 +354,7 @@ async function validateAndMatch() {
 
 	setMatchCount(matches.length);
 
-	const lineCounts = new Map();
-
-	for (const match of matches) {
-		if (typeof match.index !== "number") {
-			continue;
-		}
-
-		const lineNumber = getLineNumberForIndex(sourceText, match.index);
-		lineCounts.set(lineNumber, (lineCounts.get(lineNumber) ?? 0) + 1);
-	}
-
-	const lineBreakdown = Array.from(lineCounts.entries())
-		.sort((a, b) => a[0] - b[0])
-		.map(([lineNumber, count]) => `Line ${lineNumber}: ${count} match${count === 1 ? "" : "es"}`);
+	const lineBreakdown = formatLineBreakdown(getLineCounts(sourceText, matches));
 
 	outputInput.value = [
 		`Found ${matches.length} match${matches.length === 1 ? "" : "es"}.`,
@@ -284,36 +404,19 @@ async function onSampleFileChange() {
 	}
 
 	try {
-		let response = await fetch(`/api/files/${encodeURIComponent(fileName)}`);
-
-		if (!response.ok) {
-			response = await fetch(`./SampleData/${encodeURIComponent(fileName)}`);
-		}
-
-		if (!response.ok) {
-			return;
-		}
-
-		sampleInput.value = await response.text();
+		sampleInput.value = await fetchSampleFileText(fileName);
 		scheduleValidation();
 	} catch {
-		try {
-			const fallbackResponse = await fetch(`./SampleData/${encodeURIComponent(fileName)}`);
-
-			if (!fallbackResponse.ok) {
-				return;
-			}
-
-			sampleInput.value = await fallbackResponse.text();
-			scheduleValidation();
-		} catch {
-			// Fallback load failed — leave sample text unchanged
-		}
+		// Load failed — leave sample text unchanged
 	}
 }
 
 if (sampleFileSelect) {
 	sampleFileSelect.addEventListener("change", () => { void onSampleFileChange(); });
+}
+
+if (searchOtherFilesBtn) {
+	searchOtherFilesBtn.addEventListener("click", () => { void searchOtherFiles(); });
 }
 
 regexInput.addEventListener("input", scheduleValidation);
