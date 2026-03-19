@@ -20,7 +20,6 @@
         <div class="form-grid">
             <div class="regex-row wide-field">
                 <input type="text" id="regexText" placeholder="Regex pattern">
-                <button type="button" id="searchOtherFilesBtn">Search other files</button>
             </div>
             <select id="sampleFileSelect" class="wide-field" aria-label="Select sample data file">
                 <option value="">— select sample file —</option>
@@ -30,6 +29,8 @@
                 <textarea id="sampleText" placeholder="sample text" rows="10"></textarea>
             </div>
             <textarea id="outputText" placeholder="Output" readonly rows="8"></textarea>
+            <textarea id="otherMatchesOutput" placeholder="Other found matches" readonly rows="6"></textarea>
+            <button type="button" id="searchOtherFilesBtn">Search other files</button>
         </div>
     </main>
     <script src="res/js/main.js"></script>

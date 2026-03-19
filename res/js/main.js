@@ -2,6 +2,7 @@ const regexInput = document.getElementById("regexText");
 const sampleInput = document.getElementById("sampleText");
 const sampleHighlight = document.getElementById("sampleHighlight");
 const outputInput = document.getElementById("outputText");
+const otherMatchesOutput = document.getElementById("otherMatchesOutput");
 const matchCountDigit = document.querySelector(".zero-spinner-digit");
 const sampleFileSelect = document.getElementById("sampleFileSelect");
 const searchOtherFilesBtn = document.getElementById("searchOtherFilesBtn");
@@ -331,12 +332,14 @@ async function searchOtherFiles() {
 			`Searched ${filesToSearch.length} file${filesToSearch.length === 1 ? "" : "s"}.`,
 			"No matches found."
 		].join("\n");
+		otherMatchesOutput.value = "";
 	} else {
 		setAnimatedBackgroundIntensity(filesWithMatches, totalMatches);
 		outputInput.value = [
 			`Found ${totalMatches} match${totalMatches === 1 ? "" : "es"} in ${filesWithMatches} file${filesWithMatches === 1 ? "" : "s"}.`,
 			...reportLines
 		].join("\n");
+		otherMatchesOutput.value = reportLines.join("\n");
 	}
 
 	if (searchOtherFilesBtn) {
