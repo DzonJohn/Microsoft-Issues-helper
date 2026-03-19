@@ -19,9 +19,10 @@ body {
 
 .form-grid {
 	display: grid;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
+	grid-template-columns: minmax(320px, 0.9fr) minmax(540px, 1.7fr);
 	gap: 16px;
 	margin-top: 20px;
+	align-items: stretch;
 }
 
 .regex-row {
@@ -120,6 +121,11 @@ select {
 	grid-column: 1 / -1;
 }
 
+.regex-row.wide-field,
+#sampleFileSelect.wide-field {
+	grid-column: 1 / 2;
+}
+
 .sample-text-stack {
 	position: relative;
 	grid-column: 1 / 2;
@@ -175,13 +181,15 @@ textarea#outputText {
 	background: #eef2f9;
 	min-height: 380px;
 	grid-column: 2 / 3;
+	grid-row: 1 / span 3;
+	height: 100%;
 }
 
 textarea#sampleText {
 	min-height: 380px;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 980px) {
 	.form-grid {
 		grid-template-columns: 1fr;
 	}
@@ -190,10 +198,17 @@ textarea#sampleText {
 		grid-column: auto;
 	}
 
+	.regex-row.wide-field,
+	#sampleFileSelect.wide-field {
+		grid-column: auto;
+	}
+
 	.sample-text-stack,
 	textarea#outputText,
 	#regexText {
 		grid-column: auto;
+		grid-row: auto;
+		height: auto;
 	}
 
 	.regex-row {
