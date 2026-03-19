@@ -10,6 +10,22 @@ body {
 	justify-content: center;
 	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 	background: #f5f7fb;
+	transition: background 0.5s ease-in-out;
+}
+
+body.multi-file-match-mode {
+	background: linear-gradient(
+		130deg,
+		#f7f8ff,
+		#fff9f2,
+		#f3fffb,
+		#fff4f7,
+		#f3f7ff,
+		#f7fff3,
+		#fff6f0
+	);
+	background-size: 420% 420%;
+	animation: subtleRainbowShift 22s ease-in-out infinite;
 }
 
 .container {
@@ -228,5 +244,17 @@ textarea#sampleText {
 	}
 	to {
 		transform: rotate(360deg);
+	}
+}
+
+@keyframes subtleRainbowShift {
+	0% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
+	100% {
+		background-position: 0% 50%;
 	}
 }

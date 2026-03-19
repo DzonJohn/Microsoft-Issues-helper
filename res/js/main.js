@@ -17,6 +17,10 @@ const fallbackSampleFiles = [
 let latestValidationRequestId = 0;
 let validationTimeoutId;
 
+function setMultiFileMatchMode(isEnabled) {
+	document.body.classList.toggle("multi-file-match-mode", isEnabled);
+}
+
 function setSampleLayoutMode(fileName) {
 	if (!sampleTextStack) {
 		return;
@@ -251,6 +255,7 @@ async function searchOtherFiles() {
 	const parsed = parseRegex(regexInput.value);
 
 	if (parsed.error) {
+		setMultiFileMatchMode(false);
 		outputInput.value = parsed.error;
 		return;
 	}
@@ -262,6 +267,7 @@ async function searchOtherFiles() {
 		: files;
 
 	if (filesToSearch.length === 0) {
+		setMultiFileMatchMode(false);
 		outputInput.value = "No files available to search.";
 		return;
 	}
@@ -303,11 +309,13 @@ async function searchOtherFiles() {
 	}
 
 	if (filesWithMatches === 0) {
+		setMultiFileMatchMode(false);
 		outputInput.value = [
 			`Searched ${filesToSearch.length} file${filesToSearch.length === 1 ? "" : "s"}.`,
 			"No matches found."
 		].join("\n");
 	} else {
+		setMultiFileMatchMode(filesWithMatches > 1);
 		outputInput.value = [
 			`Found ${totalMatches} match${totalMatches === 1 ? "" : "es"} in ${filesWithMatches} file${filesWithMatches === 1 ? "" : "s"}.`,
 			...reportLines
@@ -323,6 +331,7 @@ async function searchOtherFiles() {
 async function validateAndMatch() {
 	const requestId = ++latestValidationRequestId;
 	const sourceText = sampleInput.value;
+	setMultiFileMatchMode(false);
 
 	if (!regexInput.value.trim()) {
 		setMatchCount(0);
