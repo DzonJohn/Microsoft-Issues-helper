@@ -251,6 +251,10 @@ function storeOtherMatchDetails(payload) {
 	sessionStorage.setItem(otherMatchesStorageKey, JSON.stringify(payload));
 }
 
+function markOtherMatchesStale() {
+	clearStoredOtherMatchDetails();
+}
+
 async function fetchSampleFileText(fileName) {
 	let response = await fetch(`/api/files/${encodeURIComponent(fileName)}`);
 
@@ -292,6 +296,8 @@ async function getAvailableFiles() {
 }
 
 async function searchOtherFiles() {
+	setMoreMatchesLinkVisible(false);
+
 	const parsed = parseRegex(regexInput.value);
 
 	if (parsed.error) {
@@ -449,6 +455,7 @@ async function validateAndMatch() {
 
 function scheduleValidation() {
 	clearTimeout(validationTimeoutId);
+	markOtherMatchesStale();
 	validationTimeoutId = setTimeout(() => {
 		void validateAndMatch();
 	}, 250);
@@ -485,6 +492,7 @@ async function loadFileList() {
 async function onSampleFileChange() {
 	const fileName = sampleFileSelect ? sampleFileSelect.value : "";
 	setSampleLayoutMode(fileName);
+	markOtherMatchesStale();
 
 	if (!fileName) {
 		return;
