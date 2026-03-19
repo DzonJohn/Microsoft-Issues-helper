@@ -281,7 +281,7 @@ async function searchOtherFiles() {
 	const files = await getAvailableFiles();
 	const selectedFile = sampleFileSelect ? sampleFileSelect.value : "";
 	const filesToSearch = selectedFile
-		? [selectedFile, ...files.filter((name) => name !== selectedFile)]
+		? files.filter((name) => name !== selectedFile)
 		: files;
 
 	if (filesToSearch.length === 0) {
