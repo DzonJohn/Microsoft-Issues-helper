@@ -274,7 +274,7 @@ async function searchOtherFiles() {
 
 	if (parsed.error) {
 		setAnimatedBackgroundIntensity();
-		outputInput.value = parsed.error;
+		otherMatchesOutput.value = parsed.error;
 		return;
 	}
 
@@ -286,7 +286,7 @@ async function searchOtherFiles() {
 
 	if (filesToSearch.length === 0) {
 		setAnimatedBackgroundIntensity();
-		outputInput.value = "No files available to search.";
+		otherMatchesOutput.value = "No files available to search.";
 		return;
 	}
 
@@ -328,18 +328,16 @@ async function searchOtherFiles() {
 
 	if (filesWithMatches === 0) {
 		setAnimatedBackgroundIntensity();
-		outputInput.value = [
+		otherMatchesOutput.value = [
 			`Searched ${filesToSearch.length} file${filesToSearch.length === 1 ? "" : "s"}.`,
 			"No matches found."
 		].join("\n");
-		otherMatchesOutput.value = "";
 	} else {
 		setAnimatedBackgroundIntensity(filesWithMatches, totalMatches);
-		outputInput.value = [
+		otherMatchesOutput.value = [
 			`Found ${totalMatches} match${totalMatches === 1 ? "" : "es"} in ${filesWithMatches} file${filesWithMatches === 1 ? "" : "s"}.`,
 			...reportLines
 		].join("\n");
-		otherMatchesOutput.value = reportLines.join("\n");
 	}
 
 	if (searchOtherFilesBtn) {
