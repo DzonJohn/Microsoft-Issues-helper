@@ -163,6 +163,12 @@ select {
 	padding: 0 1px;
 }
 
+.sample-text-stack.log-layout .sample-highlight,
+.sample-text-stack.log-layout #sampleText {
+	padding-left: calc(14px + 2.2ch);
+	text-indent: -2.2ch;
+}
+
 #sampleText {
 	border: 0;
 	border-radius: 0;
