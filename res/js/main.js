@@ -330,6 +330,7 @@ async function searchOtherFiles() {
 		: new RegExp(parsed.regex.source, `${parsed.regex.flags}g`);
 
 	const reportLines = [];
+	const matchedLineEntries = [];
 	const fileDetails = [];
 	let filesWithMatches = 0;
 	let totalMatches = 0;
@@ -363,6 +364,14 @@ async function searchOtherFiles() {
 			for (const line of lineBreakdown) {
 				reportLines.push(`  ${line}`);
 			}
+
+			for (const line of lines) {
+				matchedLineEntries.push({
+					fileName,
+					lineNumber: line.lineNumber,
+					text: line.text
+				});
+			}
 		} catch {
 			reportLines.push(`${fileName}: could not read file.`);
 		}
@@ -377,10 +386,23 @@ async function searchOtherFiles() {
 		clearStoredOtherMatchDetails();
 	} else {
 		setAnimatedBackgroundIntensity(filesWithMatches, totalMatches);
-		otherMatchesOutput.value = [
-			`Found ${totalMatches} match${totalMatches === 1 ? "" : "es"} in ${filesWithMatches} file${filesWithMatches === 1 ? "" : "s"}.`,
-			...reportLines
-		].join("\n");
+
+		if (totalMatches > 3) {
+			const previewLines = matchedLineEntries
+				.slice(0, 3)
+				.map((entry) => `${entry.fileName} - Line ${entry.lineNumber}: ${entry.text}`);
+
+			otherMatchesOutput.value = [
+				`Found ${totalMatches} matches in ${filesWithMatches} files.`,
+				...previewLines,
+				"Press more to see all matched lines."
+			].join("\n");
+		} else {
+			otherMatchesOutput.value = [
+				`Found ${totalMatches} match${totalMatches === 1 ? "" : "es"} in ${filesWithMatches} file${filesWithMatches === 1 ? "" : "s"}.`,
+				...reportLines
+			].join("\n");
+		}
 
 		storeOtherMatchDetails({
 			patternText: regexInput.value,
