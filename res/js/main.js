@@ -257,10 +257,12 @@ async function searchOtherFiles() {
 
 	const files = await getAvailableFiles();
 	const selectedFile = sampleFileSelect ? sampleFileSelect.value : "";
-	const otherFiles = files.filter((name) => name !== selectedFile);
+	const filesToSearch = selectedFile
+		? [selectedFile, ...files.filter((name) => name !== selectedFile)]
+		: files;
 
-	if (otherFiles.length === 0) {
-		outputInput.value = "No other files available to search.";
+	if (filesToSearch.length === 0) {
+		outputInput.value = "No files available to search.";
 		return;
 	}
 
@@ -277,7 +279,7 @@ async function searchOtherFiles() {
 	let filesWithMatches = 0;
 	let totalMatches = 0;
 
-	for (const fileName of otherFiles) {
+	for (const fileName of filesToSearch) {
 		try {
 			const fileText = await fetchSampleFileText(fileName);
 			const matches = Array.from(fileText.matchAll(regex));
@@ -302,12 +304,12 @@ async function searchOtherFiles() {
 
 	if (filesWithMatches === 0) {
 		outputInput.value = [
-			`Searched ${otherFiles.length} other file${otherFiles.length === 1 ? "" : "s"}.`,
-			"No matches found in other files."
+			`Searched ${filesToSearch.length} file${filesToSearch.length === 1 ? "" : "s"}.`,
+			"No matches found."
 		].join("\n");
 	} else {
 		outputInput.value = [
-			`Found ${totalMatches} match${totalMatches === 1 ? "" : "es"} in ${filesWithMatches} other file${filesWithMatches === 1 ? "" : "s"}.`,
+			`Found ${totalMatches} match${totalMatches === 1 ? "" : "es"} in ${filesWithMatches} file${filesWithMatches === 1 ? "" : "s"}.`,
 			...reportLines
 		].join("\n");
 	}
