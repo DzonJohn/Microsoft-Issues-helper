@@ -239,7 +239,7 @@ function setMoreMatchesLinkVisible(isVisible) {
 		return;
 	}
 
-	moreMatchesLink.hidden = !isVisible;
+	moreMatchesLink.hidden = false;
 }
 
 function clearStoredOtherMatchDetails() {
