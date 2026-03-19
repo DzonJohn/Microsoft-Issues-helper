@@ -208,25 +208,28 @@ function getLineNumberForIndex(sourceText, index) {
 	return lineNumber;
 }
 
-function getLineCounts(sourceText, matches) {
-	const lineCounts = new Map();
+function getMatchedLineNumbers(sourceText, matches) {
+	const lineNumbers = new Set();
 
 	for (const match of matches) {
 		if (typeof match.index !== "number") {
 			continue;
 		}
 
-		const lineNumber = getLineNumberForIndex(sourceText, match.index);
-		lineCounts.set(lineNumber, (lineCounts.get(lineNumber) ?? 0) + 1);
+		lineNumbers.add(getLineNumberForIndex(sourceText, match.index));
 	}
 
-	return lineCounts;
+	return Array.from(lineNumbers).sort((a, b) => a - b);
 }
 
-function formatLineBreakdown(lineCounts) {
-	return Array.from(lineCounts.entries())
-		.sort((a, b) => a[0] - b[0])
-		.map(([lineNumber, count]) => `Line ${lineNumber}: ${count} match${count === 1 ? "" : "es"}`);
+function getLineTextForNumber(sourceText, lineNumber) {
+	const lines = sourceText.split("\n");
+	const rawLine = lines[lineNumber - 1] ?? "";
+	return rawLine.replace(/\r$/, "");
+}
+
+function formatLineBreakdown(sourceText, lineNumbers) {
+	return lineNumbers.map((lineNumber) => `Line ${lineNumber}: ${getLineTextForNumber(sourceText, lineNumber)}`);
 }
 
 async function fetchSampleFileText(fileName) {
@@ -317,7 +320,7 @@ async function searchOtherFiles() {
 
 			reportLines.push(`${fileName}: ${matches.length} match${matches.length === 1 ? "" : "es"}`);
 
-			const lineBreakdown = formatLineBreakdown(getLineCounts(fileText, matches));
+			const lineBreakdown = formatLineBreakdown(fileText, getMatchedLineNumbers(fileText, matches));
 			for (const line of lineBreakdown) {
 				reportLines.push(`  ${line}`);
 			}
@@ -393,7 +396,7 @@ async function validateAndMatch() {
 
 	setMatchCount(matches.length);
 
-	const lineBreakdown = formatLineBreakdown(getLineCounts(sourceText, matches));
+	const lineBreakdown = formatLineBreakdown(sourceText, getMatchedLineNumbers(sourceText, matches));
 
 	outputInput.value = [
 		`Found ${matches.length} match${matches.length === 1 ? "" : "es"}.`,
