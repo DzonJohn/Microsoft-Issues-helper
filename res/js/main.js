@@ -17,8 +17,25 @@ const fallbackSampleFiles = [
 let latestValidationRequestId = 0;
 let validationTimeoutId;
 
-function setMultiFileMatchMode(isEnabled) {
-	document.body.classList.toggle("multi-file-match-mode", isEnabled);
+function setAnimatedBackgroundIntensity(filesWithMatches = 0, totalMatches = 0) {
+	const baselineAlpha = 0.08;
+	let vividAlpha = baselineAlpha;
+	let motionSeconds = 24;
+	let gradientSize = 420;
+
+	if (filesWithMatches > 1) {
+		const fileBoost = Math.min((filesWithMatches - 1) * 0.08, 0.4);
+		const matchBoost = Math.min(totalMatches / 120, 0.32);
+		const totalBoost = Math.min(fileBoost + matchBoost, 0.62);
+
+		vividAlpha = baselineAlpha + totalBoost;
+		motionSeconds = Math.max(10, 24 - totalBoost * 14);
+		gradientSize = 420 + Math.round(totalBoost * 180);
+	}
+
+	document.body.style.setProperty("--bg-vivid-alpha", vividAlpha.toFixed(3));
+	document.body.style.setProperty("--bg-motion-seconds", `${motionSeconds.toFixed(1)}s`);
+	document.body.style.setProperty("--bg-gradient-size", `${gradientSize}% ${gradientSize}%`);
 }
 
 function setSampleLayoutMode(fileName) {
@@ -255,7 +272,7 @@ async function searchOtherFiles() {
 	const parsed = parseRegex(regexInput.value);
 
 	if (parsed.error) {
-		setMultiFileMatchMode(false);
+		setAnimatedBackgroundIntensity();
 		outputInput.value = parsed.error;
 		return;
 	}
@@ -267,7 +284,7 @@ async function searchOtherFiles() {
 		: files;
 
 	if (filesToSearch.length === 0) {
-		setMultiFileMatchMode(false);
+		setAnimatedBackgroundIntensity();
 		outputInput.value = "No files available to search.";
 		return;
 	}
@@ -309,13 +326,13 @@ async function searchOtherFiles() {
 	}
 
 	if (filesWithMatches === 0) {
-		setMultiFileMatchMode(false);
+		setAnimatedBackgroundIntensity();
 		outputInput.value = [
 			`Searched ${filesToSearch.length} file${filesToSearch.length === 1 ? "" : "s"}.`,
 			"No matches found."
 		].join("\n");
 	} else {
-		setMultiFileMatchMode(filesWithMatches > 1);
+		setAnimatedBackgroundIntensity(filesWithMatches, totalMatches);
 		outputInput.value = [
 			`Found ${totalMatches} match${totalMatches === 1 ? "" : "es"} in ${filesWithMatches} file${filesWithMatches === 1 ? "" : "s"}.`,
 			...reportLines
@@ -331,7 +348,7 @@ async function searchOtherFiles() {
 async function validateAndMatch() {
 	const requestId = ++latestValidationRequestId;
 	const sourceText = sampleInput.value;
-	setMultiFileMatchMode(false);
+	setAnimatedBackgroundIntensity();
 
 	if (!regexInput.value.trim()) {
 		setMatchCount(0);

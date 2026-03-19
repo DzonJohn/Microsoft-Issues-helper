@@ -9,23 +9,33 @@ body {
 	align-items: center;
 	justify-content: center;
 	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-	background: #f5f7fb;
+	--bg-vivid-alpha: 0.08;
+	--bg-motion-seconds: 24s;
+	--bg-gradient-size: 420% 420%;
+	background:
+		linear-gradient(
+			130deg,
+			#f7f8ff,
+			#fff9f2,
+			#f3fffb,
+			#fff4f7,
+			#f3f7ff,
+			#f7fff3,
+			#fff6f0
+		),
+		linear-gradient(
+			130deg,
+			rgb(117 184 255 / var(--bg-vivid-alpha)),
+			rgb(255 158 126 / var(--bg-vivid-alpha)),
+			rgb(112 221 191 / var(--bg-vivid-alpha)),
+			rgb(255 151 196 / var(--bg-vivid-alpha)),
+			rgb(157 179 255 / var(--bg-vivid-alpha)),
+			rgb(187 225 132 / var(--bg-vivid-alpha)),
+			rgb(255 188 132 / var(--bg-vivid-alpha))
+		);
+	background-size: var(--bg-gradient-size), var(--bg-gradient-size);
+	animation: subtleRainbowShift var(--bg-motion-seconds) ease-in-out infinite;
 	transition: background 0.5s ease-in-out;
-}
-
-body.multi-file-match-mode {
-	background: linear-gradient(
-		130deg,
-		#f7f8ff,
-		#fff9f2,
-		#f3fffb,
-		#fff4f7,
-		#f3f7ff,
-		#f7fff3,
-		#fff6f0
-	);
-	background-size: 420% 420%;
-	animation: subtleRainbowShift 22s ease-in-out infinite;
 }
 
 .container {
