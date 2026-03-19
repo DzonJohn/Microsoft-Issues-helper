@@ -44,19 +44,23 @@ body {
 }
 
 .microsoft-logo {
-	width: clamp(110px, 16vw, 190px);
+	position: fixed;
+	top: 12px;
+	left: 12px;
+	z-index: 5;
+	width: clamp(56px, 7vw, 84px);
 	aspect-ratio: 1;
-	margin: -24px auto 24px;
+	margin: 0;
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	gap: 10px;
+	gap: 4px;
 	animation: spinLogo 1.4s linear infinite;
 }
 
 .logo-tile {
 	display: block;
-	border-radius: 8px;
-	box-shadow: 0 4px 12px rgba(17, 24, 39, 0.14);
+	border-radius: 4px;
+	box-shadow: 0 2px 7px rgba(17, 24, 39, 0.14);
 }
 
 .tile-red {
