@@ -46,7 +46,7 @@ body {
 .microsoft-logo {
 	width: clamp(110px, 16vw, 190px);
 	aspect-ratio: 1;
-	margin: -12px auto 24px;
+	margin: -24px auto 24px;
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	gap: 10px;
