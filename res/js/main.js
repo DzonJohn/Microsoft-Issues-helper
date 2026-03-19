@@ -5,6 +5,8 @@ const outputInput = document.getElementById("outputText");
 const matchCountDigit = document.querySelector(".zero-spinner-digit");
 const sampleFileSelect = document.getElementById("sampleFileSelect");
 const searchOtherFilesBtn = document.getElementById("searchOtherFilesBtn");
+const sampleTextStack = document.querySelector(".sample-text-stack");
+const logLayoutFileName = "sampleLogPlainText.txt";
 const fallbackSampleFiles = [
 	"emails.txt",
 	"phone-numbers.txt",
@@ -14,6 +16,14 @@ const fallbackSampleFiles = [
 ];
 let latestValidationRequestId = 0;
 let validationTimeoutId;
+
+function setSampleLayoutMode(fileName) {
+	if (!sampleTextStack) {
+		return;
+	}
+
+	sampleTextStack.classList.toggle("log-layout", fileName === logLayoutFileName);
+}
 
 function resetSampleFileOptions() {
 	if (!sampleFileSelect) {
@@ -394,10 +404,13 @@ async function loadFileList() {
 	} catch {
 		populateSampleFileOptions(fallbackSampleFiles);
 	}
+
+	setSampleLayoutMode(sampleFileSelect.value);
 }
 
 async function onSampleFileChange() {
 	const fileName = sampleFileSelect ? sampleFileSelect.value : "";
+	setSampleLayoutMode(fileName);
 
 	if (!fileName) {
 		return;
