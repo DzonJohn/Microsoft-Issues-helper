@@ -269,6 +269,52 @@ textarea#otherMatchesOutput {
 	min-height: 200px;
 }
 
+.more-matches-link {
+	grid-column: 1 / -1;
+	justify-self: start;
+	color: #1f5eff;
+	font-weight: 600;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+}
+
+.more-matches-link:hover {
+	color: #1949c8;
+}
+
+.detail-page {
+	max-width: 1100px;
+	margin: 24px auto;
+	padding: 16px;
+}
+
+.detail-card {
+	background: #ffffff;
+	border: 1px solid #d5deee;
+	border-radius: 10px;
+	padding: 14px;
+	margin-bottom: 14px;
+}
+
+.detail-card h2 {
+	margin: 0 0 10px;
+	font-size: 1.1rem;
+}
+
+.detail-line {
+	margin: 4px 0;
+	font-family: Consolas, "Courier New", monospace;
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.detail-hit {
+	background: #dc2626;
+	color: #ffffff;
+	border-radius: 3px;
+	padding: 0 1px;
+}
+
 textarea#sampleText {
 	min-height: 380px;
 }

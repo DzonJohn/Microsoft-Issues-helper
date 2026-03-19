@@ -3,10 +3,12 @@ const sampleInput = document.getElementById("sampleText");
 const sampleHighlight = document.getElementById("sampleHighlight");
 const outputInput = document.getElementById("outputText");
 const otherMatchesOutput = document.getElementById("otherMatchesOutput");
+const moreMatchesLink = document.getElementById("moreMatchesLink");
 const matchCountDigit = document.querySelector(".zero-spinner-digit");
 const sampleFileSelect = document.getElementById("sampleFileSelect");
 const searchOtherFilesBtn = document.getElementById("searchOtherFilesBtn");
 const sampleTextStack = document.querySelector(".sample-text-stack");
+const otherMatchesStorageKey = "regexOtherMatchesDetails";
 const logLayoutFileName = "sampleLogPlainText.txt";
 const fallbackSampleFiles = [
 	"emails.txt",
@@ -232,6 +234,23 @@ function formatLineBreakdown(sourceText, lineNumbers) {
 	return lineNumbers.map((lineNumber) => `Line ${lineNumber}: ${getLineTextForNumber(sourceText, lineNumber)}`);
 }
 
+function setMoreMatchesLinkVisible(isVisible) {
+	if (!moreMatchesLink) {
+		return;
+	}
+
+	moreMatchesLink.hidden = !isVisible;
+}
+
+function clearStoredOtherMatchDetails() {
+	sessionStorage.removeItem(otherMatchesStorageKey);
+	setMoreMatchesLinkVisible(false);
+}
+
+function storeOtherMatchDetails(payload) {
+	sessionStorage.setItem(otherMatchesStorageKey, JSON.stringify(payload));
+}
+
 async function fetchSampleFileText(fileName) {
 	let response = await fetch(`/api/files/${encodeURIComponent(fileName)}`);
 
@@ -278,6 +297,7 @@ async function searchOtherFiles() {
 	if (parsed.error) {
 		setAnimatedBackgroundIntensity();
 		otherMatchesOutput.value = parsed.error;
+		clearStoredOtherMatchDetails();
 		return;
 	}
 
@@ -290,6 +310,7 @@ async function searchOtherFiles() {
 	if (filesToSearch.length === 0) {
 		setAnimatedBackgroundIntensity();
 		otherMatchesOutput.value = "No files available to search.";
+		clearStoredOtherMatchDetails();
 		return;
 	}
 
@@ -303,6 +324,7 @@ async function searchOtherFiles() {
 		: new RegExp(parsed.regex.source, `${parsed.regex.flags}g`);
 
 	const reportLines = [];
+	const fileDetails = [];
 	let filesWithMatches = 0;
 	let totalMatches = 0;
 
@@ -320,7 +342,18 @@ async function searchOtherFiles() {
 
 			reportLines.push(`${fileName}: ${matches.length} match${matches.length === 1 ? "" : "es"}`);
 
-			const lineBreakdown = formatLineBreakdown(fileText, getMatchedLineNumbers(fileText, matches));
+			const lineNumbers = getMatchedLineNumbers(fileText, matches);
+			const lineBreakdown = formatLineBreakdown(fileText, lineNumbers);
+			const lines = lineNumbers.map((lineNumber) => ({
+				lineNumber,
+				text: getLineTextForNumber(fileText, lineNumber)
+			}));
+
+			fileDetails.push({
+				fileName,
+				lines
+			});
+
 			for (const line of lineBreakdown) {
 				reportLines.push(`  ${line}`);
 			}
@@ -335,12 +368,21 @@ async function searchOtherFiles() {
 			`Searched ${filesToSearch.length} file${filesToSearch.length === 1 ? "" : "s"}.`,
 			"No matches found."
 		].join("\n");
+		clearStoredOtherMatchDetails();
 	} else {
 		setAnimatedBackgroundIntensity(filesWithMatches, totalMatches);
 		otherMatchesOutput.value = [
 			`Found ${totalMatches} match${totalMatches === 1 ? "" : "es"} in ${filesWithMatches} file${filesWithMatches === 1 ? "" : "s"}.`,
 			...reportLines
 		].join("\n");
+
+		storeOtherMatchDetails({
+			patternText: regexInput.value,
+			totalMatches,
+			filesWithMatches,
+			files: fileDetails
+		});
+		setMoreMatchesLinkVisible(totalMatches > 3);
 	}
 
 	if (searchOtherFilesBtn) {
