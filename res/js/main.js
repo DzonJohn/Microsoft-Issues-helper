@@ -447,7 +447,6 @@ async function onSampleFileChange() {
 
 	try {
 		sampleInput.value = await fetchSampleFileText(fileName);
-		scheduleValidation();
 	} catch {
 		// Load failed — leave sample text unchanged
 	}
