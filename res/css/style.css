@@ -43,6 +43,38 @@ body {
 	text-align: left;
 }
 
+.microsoft-logo {
+	width: clamp(110px, 16vw, 190px);
+	aspect-ratio: 1;
+	margin: 0 auto 16px;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 10px;
+	animation: spinLogo 1.4s linear infinite;
+}
+
+.logo-tile {
+	display: block;
+	border-radius: 8px;
+	box-shadow: 0 4px 12px rgba(17, 24, 39, 0.14);
+}
+
+.tile-red {
+	background: #f25022;
+}
+
+.tile-green {
+	background: #7fba00;
+}
+
+.tile-blue {
+	background: #00a4ef;
+}
+
+.tile-yellow {
+	background: #ffb900;
+}
+
 .form-grid {
 	display: grid;
 	grid-template-columns: minmax(320px, 0.9fr) minmax(540px, 1.7fr);
@@ -266,5 +298,14 @@ textarea#sampleText {
 	}
 	100% {
 		background-position: 0% 50%;
+	}
+}
+
+@keyframes spinLogo {
+	from {
+		transform: rotate(0deg);
+	}
+	to {
+		transform: rotate(-360deg);
 	}
 }
